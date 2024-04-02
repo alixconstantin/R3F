@@ -1,29 +1,46 @@
-import { MeshBasicMaterial } from "three";
-import { useFrame } from "@react-three/fiber";
+import { useThree, useFrame, extend } from "@react-three/fiber";
+import { useRef } from "react";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-export default function Experience() {
-  
-    useFrame(() =>
-    {
-        
-    })
-    
+
+extend({ OrbitControls });
+
+export default function Experience()
+{
+  let cubeRef= useRef();
+  let {camera, gl} = useThree();;
+
+  useFrame((state, delta) => {
+    cubeRef.current.rotation.y += delta + 0.005;
+  });
+
   return (
     <>
-    <mesh position-x={ - 2 }>
-    <sphereGeometry />
-    <meshBasicMaterial color="orange" wireframe/>
-</mesh>
+     <directionalLight position={[1,2,3]} intensity={1.5}/>
+     <orbitControls args={[camera, gl.domElement]}/>
+      <group>
+        
+        <mesh position-x={-2}>
+          <sphereGeometry />
+          <meshStandardMaterial color="orange" />
+        </mesh>
 
-<mesh rotation-y={ Math.PI * 0.25 } position-x={ 2 } scale={ 1.5 }>
-    <boxGeometry/>
-    <meshBasicMaterial color="mediumpurple" wireframe/>
-</mesh>
+        <mesh
+          ref={cubeRef}
+          rotation-y={Math.PI * 0.25}
+          position-x={2}
+          scale={1.5}
+        >
+          <boxGeometry />
+          <meshStandardMaterial color="mediumpurple" />
+        </mesh>
 
-<mesh position-y={ - 1 } rotation-x={ - Math.PI * 0.5 } scale={ 10 }>
-    <planeGeometry/>
-    <meshBasicMaterial  color="greenyellow" />
-</mesh>
+      </group>
+ 
+      <mesh position-y={-1} rotation-x={-Math.PI * 0.5} scale={10}>
+        <planeGeometry />
+        <meshStandardMaterial color="greenyellow" />
+      </mesh>
     </>
   );
 }
